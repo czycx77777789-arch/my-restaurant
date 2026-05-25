@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>品之味餐厅 — 地道江西菜</title>
+  <style>
+    /* ========== Reset & Base ========== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --color-bg: #FAF8F5;
+      --color-white: #FFFFFF;
+      --color-text: #2C2C2C;
+      --color-text-light: #6B6B6B;
+      --color-accent: #C8553D;
+      --color-accent-dark: #A8432F;
+      --color-warm: #E8DDD3;
+      --color-warm-light: #F2ECE6;
+      --color-border: #E8E2DC;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 40px rgba(0,0,0,0.10);
+      --radius: 12px;
+      --radius-lg: 20px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+                   "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ========== Scrollbar ========== */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
+
+    /* ========== Navigation ========== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(250, 248, 245, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid transparent;
+      transition: var(--transition);
+    }
+    .navbar.scrolled {
+      border-bottom-color: var(--color-border);
+      box-shadow: var(--shadow-sm);
+    }
+    .nav-inner {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text);
+      letter-spacing: 1px;
+    }
+    .nav-logo span { color: var(--color-accent); }
+    .nav-menu-btn {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: var(--color-warm-light);
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: var(--transition);
+    }
+    .nav-menu-btn:hover { background: var(--color-warm); }
+    .nav-menu-btn span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      background: var(--color-text);
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+    .nav-menu-btn.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .nav-menu-btn.active span:nth-child(2) { opacity: 0; }
+    .nav-menu-btn.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    /* Mobile Menu Overlay */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: rgba(250, 248, 245, 0.98);
+      backdrop-filter: blur(20px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    .mobile-menu.open { opacity: 1; pointer-events: auto; }
+    .mobile-menu a {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--color-text);
+      text-decoration: none;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: var(--transition);
+    }
+    .mobile-menu.open a {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .mobile-menu.open a:nth-child(1) { transition-delay: 0.05s; }
+    .mobile-menu.open a:nth-child(2) { transition-delay: 0.1s; }
+    .mobile-menu.open a:nth-child(3) { transition-delay: 0.15s; }
+    .mobile-menu.open a:nth-child(4) { transition-delay: 0.2s; }
+    .mobile-menu.open a:nth-child(5) { transition-delay: 0.25s; }
+    .mobile-menu a:active { color: var(--color-accent); }
+
+    /* ========== Hero Section ========== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 24px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      right: -30%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, var(--color-warm) 0%, transparent 70%);
+      border-radius: 50%;
+      opacity: 0.5;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -10%;
+      left: -20%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(200,85,61,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      background: var(--color-warm-light);
+      border-radius: 100px;
+      font-size: 13px;
+      color: var(--color-text-light);
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--color-accent);
+      border-radius: 50%;
+    }
+    .hero h1 {
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+      letter-spacing: 2px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--color-accent);
+    }
+    .hero p {
+      font-size: 15px;
+      color: var(--color-text-light);
+      max-width: 300px;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 36px;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      letter-spacing: 0.5px;
+    }
+    .btn-primary {
+      background: var(--color-accent);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(200,85,61,0.3);
+    }
+    .btn-primary:hover {
+      background: var(--color-accent-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(200,85,61,0.35);
+    }
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(200,85,61,0.3);
+    }
+    .btn-outline {
+      background: var(--color-white);
+      color: var(--color-text);
+      border: 1.5px solid var(--color-border);
+    }
+    .btn-outline:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      transform: translateY(-2px);
+    }
+    .btn-outline:active { transform: translateY(0); }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-text-light);
+      font-size: 12px;
+      animation: float 2.5s ease-in-out infinite;
+    }
+    .scroll-hint svg { opacity: 0.4; }
+    @keyframes float {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ========== Section Common ========== */
+    .section {
+      padding: 72px 24px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .section-tag {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-accent);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .section-desc {
+      font-size: 14px;
+      color: var(--color-text-light);
+      margin-top: 10px;
+    }
+
+    /* ========== Divider ========== */
+    .divider {
+      max-width: 480px;
+      margin: 0 auto;
+      height: 1px;
+      background: var(--color-border);
+    }
+
+    /* ========== About Section ========== */
+    .about-card {
+      background: var(--color-white);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+    }
+    .about-card p {
+      font-size: 15px;
+      color: var(--color-text-light);
+      line-height: 1.9;
+    }
+    .about-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .about-feature {
+      background: var(--color-bg);
+      border-radius: var(--radius);
+      padding: 20px 16px;
+      text-align: center;
+      transition: var(--transition);
+    }
+    .about-feature:active {
+      transform: scale(0.97);
+    }
+    .about-feature-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .about-feature-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .about-feature-desc {
+      font-size: 11px;
+      color: var(--color-text-light);
+      margin-top: 4px;
+    }
+
+    /* ========== Menu Section ========== */
+    .menu-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .menu-item {
+      background: var(--color-white);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .menu-item:active {
+      transform: scale(0.98);
+    }
+    .menu-item-img {
+      width: 100%;
+      height: 180px;
+      background: var(--color-warm-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .menu-item-img::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.03) 100%);
+    }
+    .menu-item-info {
+      padding: 20px;
+    }
+    .menu-item-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .menu-item-name {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .menu-item-tag {
+      flex-shrink: 0;
+      font-size: 11px;
+      padding: 3px 10px;
+      background: rgba(200,85,61,0.08);
+      color: var(--color-accent);
+      border-radius: 100px;
+      font-weight: 500;
+    }
+    .menu-item-desc {
+      font-size: 13px;
+      color: var(--color-text-light);
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+    .menu-item-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--color-border);
+    }
+    .menu-item-price {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--color-accent);
+    }
+    .menu-item-price small {
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .menu-item-like {
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid var(--color-border);
+      border-radius: 50%;
+      background: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      font-size: 16px;
+    }
+    .menu-item-like:hover {
+      border-color: var(--color-accent);
+    }
+    .menu-item-like.liked {
+      background: rgba(200,85,61,0.08);
+      border-color: var(--color-accent);
+    }
+
+    /* ========== Social Section ========== */
+    .social-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .social-card {
+      background: var(--color-white);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      color: inherit;
+    }
+    .social-card:active {
+      transform: scale(0.98);
+    }
+    .social-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .social-icon.wechat {
+      background: linear-gradient(135deg, #07C160, #06AD56);
+      color: #fff;
+    }
+    .social-icon.douyin {
+      background: linear-gradient(135deg, #1A1A1A, #333);
+      color: #fff;
+    }
+    .social-info { flex: 1; }
+    .social-name {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .social-id {
+      font-size: 13px;
+      color: var(--color-text-light);
+      margin-top: 2px;
+    }
+    .social-action {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--color-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+    .social-card:active .social-action {
+      background: var(--color-warm);
+    }
+    .social-action svg {
+      width: 18px;
+      height: 18px;
+      color: var(--color-text-light);
+    }
+
+    /* ========== Reservation Section ========== */
+    .reservation {
+      text-align: center;
+      padding: 80px 24px;
+      background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-warm-light) 100%);
+    }
+    .reservation h2 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+    .reservation p {
+      font-size: 14px;
+      color: var(--color-text-light);
+      margin-bottom: 32px;
+      max-width: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .reservation .btn {
+      width: 100%;
+      max-width: 320px;
+      padding: 16px 32px;
+      font-size: 16px;
+    }
+
+    /* Reservation Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal {
+      background: var(--color-white);
+      border-radius: 24px 24px 0 0;
+      padding: 32px 24px 40px;
+      width: 100%;
+      max-width: 480px;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .modal-overlay.open .modal {
+      transform: translateY(0);
+    }
+    .modal-handle {
+      width: 36px;
+      height: 4px;
+      background: var(--color-border);
+      border-radius: 4px;
+      margin: 0 auto 24px;
+    }
+    .modal-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(200,85,61,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 28px;
+    }
+    .modal h3 {
+      font-size: 20px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .modal p {
+      font-size: 15px;
+      color: var(--color-text-light);
+      text-align: center;
+      line-height: 1.8;
+      margin-bottom: 28px;
+    }
+    .modal .btn {
+      width: 100%;
+    }
+
+    /* ========== Footer ========== */
+    .footer {
+      background: var(--color-white);
+      border-top: 1px solid var(--color-border);
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .footer-brand {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .footer-brand span { color: var(--color-accent); }
+    .footer p {
+      font-size: 12px;
+      color: var(--color-text-light);
+      line-height: 1.8;
+    }
+
+    /* ========== Toast ========== */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--color-text);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 300;
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      white-space: nowrap;
+      box-shadow: var(--shadow-lg);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ========== Animations ========== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">品之<span>味</span></div>
+      <button class="nav-menu-btn" id="menuBtn" aria-label="菜单">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about" onclick="closeMenu()">门店简介</a>
+    <a href="#menu" onclick="closeMenu()">招牌菜单</a>
+    <a href="#social" onclick="closeMenu()">关注我们</a>
+    <a href="#reservation" onclick="closeMenu()">在线预约</a>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">地道江西风味</div>
+    <h1>品之味<em>餐厅</em></h1>
+    <p>传承赣菜精髓，用心烹饪每一道菜，让每一口都是家的味道</p>
+    <div class="hero-actions">
+      <a href="#menu" class="btn btn-primary">查看菜单</a>
+      <a href="#reservation" class="btn btn-outline">立即预约</a>
+    </div>
+    <div class="scroll-hint">
+      <span>向下滑动</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </div>
+  </section>
+
+  <!-- About -->
+  <div class="divider"></div>
+  <section class="section" id="about">
+    <div class="section-header fade-in">
+      <div class="section-tag">关于我们</div>
+      <h2 class="section-title">门店简介</h2>
+    </div>
+    <div class="about-card fade-in">
+      <p>
+        品之味餐厅，专注地道江西菜。我们精选优质食材，传承经典烹饪技法，为您呈现正宗赣味佳肴。从鲜辣可口的南昌拌粉到醇香浓郁的瓦罐汤，每一道菜都承载着江西大地的风味与记忆。
+      </p>
+      <div class="about-features">
+        <div class="about-feature">
+          <span class="about-feature-icon">🌿</span>
+          <div class="about-feature-title">新鲜食材</div>
+          <div class="about-feature-desc">每日精选优质原料</div>
+        </div>
+        <div class="about-feature">
+          <span class="about-feature-icon">👨‍🍳</span>
+          <div class="about-feature-title">匠心烹饪</div>
+          <div class="about-feature-desc">传承经典赣菜技法</div>
+        </div>
+        <div class="about-feature">
+          <span class="about-feature-icon">🏠</span>
+          <div class="about-feature-title">舒适环境</div>
+          <div class="about-feature-desc">温馨雅致的用餐空间</div>
+        </div>
+        <div class="about-feature">
+          <span class="about-feature-icon">❤️</span>
+          <div class="about-feature-title">用心服务</div>
+          <div class="about-feature-desc">每一位客人都如家人</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Menu -->
+  <div class="divider"></div>
+  <section class="section" id="menu">
+    <div class="section-header fade-in">
+      <div class="section-tag">招牌推荐</div>
+      <h2 class="section-title">精选菜单</h2>
+      <p class="section-desc">每一道都是店里的经典之选</p>
+    </div>
+    <div class="menu-grid">
+      <div class="menu-item fade-in">
+        <div class="menu-item-img">🍲</div>
+        <div class="menu-item-info">
+          <div class="menu-item-top">
+            <div class="menu-item-name">瓦罐煨汤</div>
+            <div class="menu-item-tag">招牌</div>
+          </div>
+          <div class="menu-item-desc">慢火煨制数小时，汤鲜味醇，滋补养生</div>
+          <div class="menu-item-bottom">
+            <div class="menu-item-price"><small>¥</small>38</div>
+            <button class="menu-item-like" onclick="toggleLike(this)" aria-label="喜欢">🤍</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-item fade-in">
+        <div class="menu-item-img">🌶️</div>
+        <div class="menu-item-info">
+          <div class="menu-item-top">
+            <div class="menu-item-name">南昌拌粉</div>
+            <div class="menu-item-tag">人气</div>
+          </div>
+          <div class="menu-item-desc">Q弹米粉配秘制酱料，鲜辣爽口，回味无穷</div>
+          <div class="menu-item-bottom">
+            <div class="menu-item-price"><small>¥</small>18</div>
+            <button class="menu-item-like" onclick="toggleLike(this)" aria-label="喜欢">🤍</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-item fade-in">
+        <div class="menu-item-img">🥘</div>
+        <div class="menu-item-info">
+          <div class="menu-item-top">
+            <div class="menu-item-name">莲花血鸭</div>
+            <div class="menu-item-tag">经典</div>
+          </div>
+          <div class="menu-item-desc">江西名菜，鸭血与鸭肉完美融合，香辣下饭</div>
+          <div class="menu-item-bottom">
+            <div class="menu-item-price"><small>¥</small>58</div>
+            <button class="menu-item-like" onclick="toggleLike(this)" aria-label="喜欢">🤍</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-item fade-in">
+        <div class="menu-item-img">🐟</div>
+        <div class="menu-item-info">
+          <div class="menu-item-top">
+            <div class="menu-item-name">鄱阳湖鱼头</div>
+            <div class="menu-item-tag">必点</div>
+          </div>
+          <div class="menu-item-desc">鲜嫩鱼头配辣椒酱蒸制，鲜辣入味，肉质细滑</div>
+          <div class="menu-item-bottom">
+            <div class="menu-item-price"><small>¥</small>68</div>
+            <button class="menu-item-like" onclick="toggleLike(this)" aria-label="喜欢">🤍</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social -->
+  <div class="divider"></div>
+  <section class="section" id="social">
+    <div class="section-header fade-in">
+      <div class="section-tag">联系我们</div>
+      <h2 class="section-title">关注我们</h2>
+      <p class="section-desc">扫码或搜索关注，获取最新动态</p>
+    </div>
+    <div class="social-cards">
+      <div class="social-card fade-in" onclick="copyText('PinZhiWei_2024', '微信号已复制')">
+        <div class="social-icon wechat">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 01.213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 00.167-.054l1.903-1.114a.864.864 0 01.717-.098 10.16 10.16 0 002.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 01-1.162 1.178A1.17 1.17 0 014.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 01-1.162 1.178 1.17 1.17 0 01-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 01.598.082l1.584.926a.272.272 0 00.14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 01-.023-.156.49.49 0 01.201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-7.062-6.122zM14.033 13.33c.535 0 .969.44.969.982a.976.976 0 01-.969.983.976.976 0 01-.969-.983c0-.542.434-.982.97-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 01-.969.983.976.976 0 01-.969-.983c0-.542.434-.982.97-.982z"/></svg>
+        </div>
+        <div class="social-info">
+          <div class="social-name">微信</div>
+          <div class="social-id">PinZhiWei_2024（点击复制）</div>
+        </div>
+        <div class="social-action">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        </div>
+      </div>
+
+      <div class="social-card fade-in" onclick="copyText('品之味餐厅', '抖音号已复制')">
+        <div class="social-icon douyin">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86 4.46V13a8.28 8.28 0 005.58 2.16V11.7a4.83 4.83 0 01-3.77-1.78V6.69h3.77z"/></svg>
+        </div>
+        <div class="social-info">
+          <div class="social-name">抖音</div>
+          <div class="social-id">品之味餐厅（点击复制）</div>
+        </div>
+        <div class="social-action">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reservation -->
+  <section class="reservation" id="reservation">
+    <div class="fade-in">
+      <div class="section-tag">预约用餐</div>
+      <h2>期待您的光临</h2>
+      <p>提前预约，为您保留最佳座位</p>
+      <button class="btn btn-primary" onclick="openReservation()">立即预约</button>
+    </div>
+  </section>
+
+  <!-- Reservation Modal -->
+  <div class="modal-overlay" id="reservationModal" onclick="closeReservation(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-handle"></div>
+      <div class="modal-icon">🍽️</div>
+      <h3>预约用餐</h3>
+      <p>具体情况请联系店家微信<br>我们会尽快为您安排</p>
+      <button class="btn btn-primary" onclick="closeReservationDirect()">我知道了</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-brand">品之<span>味</span>餐厅</div>
+    <p>传承赣菜精髓 · 用心烹饪每一道菜</p>
+    <p style="margin-top: 8px; opacity: 0.6;">© 2025 品之味餐厅 版权所有</p>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ===== Navbar scroll effect =====
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // ===== Mobile menu =====
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    let menuOpen = false;
+
+    menuBtn.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      menuBtn.classList.toggle('active', menuOpen);
+      mobileMenu.classList.toggle('open', menuOpen);
+      document.body.style.overflow = menuOpen ? 'hidden' : '';
+    });
+
+    function closeMenu() {
+      menuOpen = false;
+      menuBtn.classList.remove('active');
+      mobileMenu.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // ===== Like button =====
+    function toggleLike(btn) {
+      const isLiked = btn.classList.toggle('liked');
+      btn.textContent = isLiked ? '❤️' : '🤍';
+      btn.style.transform = 'scale(1.3)';
+      setTimeout(() => { btn.style.transform = 'scale(1)'; }, 200);
+      showToast(isLiked ? '已收藏' : '已取消收藏');
+    }
+
+    // ===== Copy text =====
+    function copyText(text, message) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(message);
+        }).catch(() => {
+          fallbackCopy(text, message);
+        });
+      } else {
+        fallbackCopy(text, message);
+      }
+    }
+
+    function fallbackCopy(text, message) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast(message);
+      } catch (e) {
+        showToast('复制失败，请手动复制');
+      }
+      document.body.removeChild(textarea);
+    }
+
+    // ===== Reservation modal =====
+    function openReservation() {
+      document.getElementById('reservationModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeReservation(e) {
+      if (e.target === e.currentTarget) {
+        closeReservationDirect();
+      }
+    }
+
+    function closeReservationDirect() {
+      document.getElementById('reservationModal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // ===== Toast =====
+    let toastTimer;
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      clearTimeout(toastTimer);
+      toast.textContent = message;
+      toast.classList.add('show');
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    // ===== Scroll fade-in animation =====
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
