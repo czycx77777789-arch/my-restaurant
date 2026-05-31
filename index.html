@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>品之味餐厅 — 地道江西菜</title>
   <style>
-    /* ========== Reset & Base ========== */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
@@ -24,281 +23,160 @@
       --radius: 12px;
       --radius-lg: 20px;
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --modal-bg: rgba(0,0,0,0.4);
+    }
+
+    [data-theme="dark"] {
+      --color-bg: #1A1A1A;
+      --color-white: #252525;
+      --color-text: #E8E8E8;
+      --color-text-light: #999;
+      --color-accent: #FF7B5A;
+      --color-accent-dark: #E0694A;
+      --color-warm: #2C2520;
+      --color-warm-light: #1F1F1F;
+      --color-border: #333;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.2);
+      --shadow-md: 0 4px 20px rgba(0,0,0,0.25);
+      --shadow-lg: 0 8px 40px rgba(0,0,0,0.3);
+      --modal-bg: rgba(0,0,0,0.7);
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
-                   "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
       background: var(--color-bg);
       color: var(--color-text);
       line-height: 1.7;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      transition: background 0.4s ease, color 0.4s ease;
     }
 
-    /* ========== Scrollbar ========== */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
 
-    /* ========== Navigation ========== */
+    /* ===== Navbar ===== */
     .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       background: rgba(250, 248, 245, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid transparent;
-      transition: var(--transition);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid transparent; transition: var(--transition);
     }
+    [data-theme="dark"] .navbar { background: rgba(26, 26, 26, 0.85); }
     .navbar.scrolled {
-      border-bottom-color: var(--color-border);
-      box-shadow: var(--shadow-sm);
+      border-bottom-color: var(--color-border); box-shadow: var(--shadow-sm);
     }
     .nav-inner {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 14px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      max-width: 480px; margin: 0 auto; padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
     }
-    .nav-logo {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--color-text);
-      letter-spacing: 1px;
-    }
+    .nav-logo { font-size: 18px; font-weight: 700; letter-spacing: 1px; }
     .nav-logo span { color: var(--color-accent); }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+
+    .theme-toggle {
+      width: 36px; height: 36px; border: none; background: var(--color-warm-light);
+      border-radius: 10px; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; font-size: 16px; transition: var(--transition);
+    }
+    .theme-toggle:hover { background: var(--color-warm); }
+    .theme-toggle .icon-sun { display: none; }
+    .theme-toggle .icon-moon { display: inline; }
+    [data-theme="dark"] .theme-toggle .icon-sun { display: inline; }
+    [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
     .nav-menu-btn {
-      width: 36px;
-      height: 36px;
-      border: none;
-      background: var(--color-warm-light);
-      border-radius: 10px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      transition: var(--transition);
+      width: 36px; height: 36px; border: none; background: var(--color-warm-light);
+      border-radius: 10px; cursor: pointer; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 5px; transition: var(--transition);
     }
     .nav-menu-btn:hover { background: var(--color-warm); }
-    .nav-menu-btn span {
-      display: block;
-      width: 18px;
-      height: 2px;
-      background: var(--color-text);
-      border-radius: 2px;
-      transition: var(--transition);
-    }
+    .nav-menu-btn span { display: block; width: 18px; height: 2px; background: var(--color-text); border-radius: 2px; transition: var(--transition); }
     .nav-menu-btn.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
     .nav-menu-btn.active span:nth-child(2) { opacity: 0; }
     .nav-menu-btn.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
-    /* Mobile Menu Overlay */
     .mobile-menu {
-      position: fixed;
-      inset: 0;
-      z-index: 99;
-      background: rgba(250, 248, 245, 0.98);
-      backdrop-filter: blur(20px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 28px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.35s ease;
+      position: fixed; inset: 0; z-index: 99;
+      background: rgba(250, 248, 245, 0.98); backdrop-filter: blur(20px);
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 28px;
+      opacity: 0; pointer-events: none; transition: opacity 0.35s ease;
     }
+    [data-theme="dark"] .mobile-menu { background: rgba(26, 26, 26, 0.98); }
     .mobile-menu.open { opacity: 1; pointer-events: auto; }
     .mobile-menu a {
-      font-size: 20px;
-      font-weight: 500;
-      color: var(--color-text);
-      text-decoration: none;
-      opacity: 0;
-      transform: translateY(16px);
-      transition: var(--transition);
+      font-size: 20px; font-weight: 500; color: var(--color-text);
+      text-decoration: none; opacity: 0; transform: translateY(16px); transition: var(--transition);
     }
-    .mobile-menu.open a {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .mobile-menu.open a { opacity: 1; transform: translateY(0); }
     .mobile-menu.open a:nth-child(1) { transition-delay: 0.05s; }
     .mobile-menu.open a:nth-child(2) { transition-delay: 0.1s; }
     .mobile-menu.open a:nth-child(3) { transition-delay: 0.15s; }
     .mobile-menu.open a:nth-child(4) { transition-delay: 0.2s; }
     .mobile-menu.open a:nth-child(5) { transition-delay: 0.25s; }
-    .mobile-menu a:active { color: var(--color-accent); }
 
-    /* ========== Hero Section ========== */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 100px 24px 60px;
-      position: relative;
-      overflow: hidden;
+    /* ===== Hero Slideshow ===== */
+    .hero-slideshow {
+      min-height: 100vh; display: flex; flex-direction: column; position: relative; overflow: hidden;
     }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -20%;
-      right: -30%;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, var(--color-warm) 0%, transparent 70%);
-      border-radius: 50%;
-      opacity: 0.5;
+    .hero-slide {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      padding: 100px 24px 80px;
+      opacity: 0; transition: opacity 0.8s ease, transform 0.8s ease;
+      transform: scale(1.05);
     }
-    .hero::after {
-      content: '';
-      position: absolute;
-      bottom: -10%;
-      left: -20%;
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(200,85,61,0.08) 0%, transparent 70%);
-      border-radius: 50%;
+    .hero-slide.active { opacity: 1; transform: scale(1); }
+    .hero-slide-bg {
+      position: absolute; inset: 0; display: flex; align-items: center;
+      justify-content: center; font-size: 200px; opacity: 0.08;
+      transition: opacity 0.8s ease;
     }
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 16px;
-      background: var(--color-warm-light);
-      border-radius: 100px;
-      font-size: 13px;
-      color: var(--color-text-light);
-      margin-bottom: 24px;
-      position: relative;
-      z-index: 1;
+    [data-theme="dark"] .hero-slide-bg { opacity: 0.06; }
+    .hero-slide-content { position: relative; z-index: 1; }
+    .hero-slide-tag {
+      display: inline-block; padding: 4px 14px; background: rgba(200,85,61,0.12);
+      color: var(--color-accent); border-radius: 100px;
+      font-size: 12px; font-weight: 600; letter-spacing: 2px; margin-bottom: 16px;
     }
-    .hero-badge::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      background: var(--color-accent);
-      border-radius: 50%;
+    .hero-slide-name {
+      font-size: 34px; font-weight: 800; letter-spacing: 2px; margin-bottom: 8px;
     }
-    .hero h1 {
-      font-size: 36px;
-      font-weight: 800;
-      line-height: 1.3;
-      margin-bottom: 16px;
-      position: relative;
-      z-index: 1;
-      letter-spacing: 2px;
+    .hero-slide-price {
+      font-size: 28px; font-weight: 800; color: var(--color-accent); margin-bottom: 12px;
     }
-    .hero h1 em {
-      font-style: normal;
-      color: var(--color-accent);
+    .hero-slide-price small { font-size: 16px; font-weight: 500; }
+    .hero-slide-desc {
+      font-size: 14px; color: var(--color-text-light); max-width: 280px; margin-bottom: 32px;
     }
-    .hero p {
-      font-size: 15px;
-      color: var(--color-text-light);
-      max-width: 300px;
-      position: relative;
-      z-index: 1;
-      margin-bottom: 36px;
+    .hero-slide-btn {
+      display: inline-flex; align-items: center; gap: 6px; padding: 14px 32px;
+      background: var(--color-accent); color: #fff; border-radius: 100px;
+      font-size: 15px; font-weight: 600; text-decoration: none;
+      box-shadow: 0 4px 16px rgba(200,85,61,0.3); transition: var(--transition);
     }
+    .hero-slide-btn:hover { transform: translateY(-2px); }
 
-    /* Hero Notice */
-    .hero-notice {
-      display: inline-flex;
-      align-items: flex-start;
-      gap: 8px;
-      padding: 12px 18px;
-      background: rgba(200,85,61,0.06);
-      border: 1px solid rgba(200,85,61,0.15);
-      border-radius: 12px;
-      font-size: 13px;
-      color: var(--color-text-light);
-      line-height: 1.6;
-      margin-bottom: 32px;
-      position: relative;
-      z-index: 1;
-      max-width: 340px;
-      text-align: left;
+    /* Hero Dots */
+    .hero-dots {
+      position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 10px; z-index: 2;
     }
-    .hero-notice-icon {
-      font-size: 16px;
-      flex-shrink: 0;
-      margin-top: 1px;
+    .hero-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--color-border);
+      border: none; cursor: pointer; transition: var(--transition);
     }
-    .hero-notice strong {
-      color: var(--color-accent);
-      font-weight: 600;
-    }
-    .hero-actions {
-      display: flex;
-      gap: 12px;
-      position: relative;
-      z-index: 1;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 14px 28px;
-      border-radius: 100px;
-      font-size: 15px;
-      font-weight: 600;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      transition: var(--transition);
-      letter-spacing: 0.5px;
-    }
-    .btn-primary {
-      background: var(--color-accent);
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(200,85,61,0.3);
-    }
-    .btn-primary:hover {
-      background: var(--color-accent-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(200,85,61,0.35);
-    }
-    .btn-primary:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 8px rgba(200,85,61,0.3);
-    }
-    .btn-outline {
-      background: var(--color-white);
-      color: var(--color-text);
-      border: 1.5px solid var(--color-border);
-    }
-    .btn-outline:hover {
-      border-color: var(--color-accent);
-      color: var(--color-accent);
-      transform: translateY(-2px);
-    }
-    .btn-outline:active { transform: translateY(0); }
+    .hero-dot.active { background: var(--color-accent); width: 24px; border-radius: 4px; }
 
+    /* Hero Scroll Hint */
     .scroll-hint {
-      position: absolute;
-      bottom: 32px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: var(--color-text-light);
-      font-size: 12px;
+      position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      color: var(--color-text-light); font-size: 11px; z-index: 2;
       animation: float 2.5s ease-in-out infinite;
     }
     .scroll-hint svg { opacity: 0.4; }
@@ -307,406 +185,272 @@
       50% { transform: translateX(-50%) translateY(8px); }
     }
 
-    /* ========== Section Common ========== */
-    .section {
-      padding: 72px 24px;
-      max-width: 480px;
-      margin: 0 auto;
-    }
-    .section-header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
+    /* ===== Section Common ===== */
+    .section { padding: 72px 24px; max-width: 480px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 40px; }
     .section-tag {
-      display: inline-block;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--color-accent);
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      margin-bottom: 12px;
+      display: inline-block; font-size: 12px; font-weight: 600;
+      color: var(--color-accent); text-transform: uppercase;
+      letter-spacing: 3px; margin-bottom: 12px;
     }
-    .section-title {
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
-    .section-desc {
-      font-size: 14px;
-      color: var(--color-text-light);
-      margin-top: 10px;
-    }
+    .section-title { font-size: 26px; font-weight: 700; letter-spacing: 1px; }
+    .section-desc { font-size: 14px; color: var(--color-text-light); margin-top: 10px; }
 
-    /* ========== Divider ========== */
-    .divider {
-      max-width: 480px;
-      margin: 0 auto;
-      height: 1px;
-      background: var(--color-border);
-    }
+    .divider { max-width: 480px; margin: 0 auto; height: 1px; background: var(--color-border); }
 
-    /* ========== About Section ========== */
+    /* ===== Notice ===== */
+    .hero-notice {
+      max-width: 480px; margin: 0 auto; padding: 0 24px 32px;
+    }
+    .hero-notice-inner {
+      display: inline-flex; align-items: flex-start; gap: 8px;
+      padding: 12px 18px; background: rgba(200,85,61,0.06);
+      border: 1px solid rgba(200,85,61,0.15); border-radius: 12px;
+      font-size: 13px; color: var(--color-text-light); line-height: 1.6;
+      width: 100%; text-align: left;
+    }
+    .hero-notice-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .hero-notice strong { color: var(--color-accent); font-weight: 600; }
+
+    /* ===== About Section ===== */
     .about-card {
-      background: var(--color-white);
-      border-radius: var(--radius-lg);
-      padding: 32px 24px;
-      box-shadow: var(--shadow-sm);
-      border: 1px solid var(--color-border);
+      background: var(--color-white); border-radius: var(--radius-lg);
+      padding: 32px 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--color-border);
     }
-    .about-card p {
-      font-size: 15px;
-      color: var(--color-text-light);
-      line-height: 1.9;
-    }
-    .about-features {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-top: 24px;
-    }
+    .about-card p { font-size: 15px; color: var(--color-text-light); line-height: 1.9; }
+    .about-features { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
     .about-feature {
-      background: var(--color-bg);
-      border-radius: var(--radius);
-      padding: 20px 16px;
-      text-align: center;
-      transition: var(--transition);
+      background: var(--color-bg); border-radius: var(--radius);
+      padding: 20px 16px; text-align: center; transition: var(--transition);
     }
-    .about-feature:active {
-      transform: scale(0.97);
-    }
-    .about-feature-icon {
-      font-size: 28px;
-      margin-bottom: 8px;
-      display: block;
-    }
-    .about-feature-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--color-text);
-    }
-    .about-feature-desc {
-      font-size: 11px;
-      color: var(--color-text-light);
-      margin-top: 4px;
-    }
+    .about-feature:active { transform: scale(0.97); }
+    .about-feature-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+    .about-feature-title { font-size: 13px; font-weight: 600; }
+    .about-feature-desc { font-size: 11px; color: var(--color-text-light); margin-top: 4px; }
 
-    /* ========== Menu Section ========== */
-    .menu-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+    /* ===== Menu Section ===== */
+    .menu-grid { display: flex; flex-direction: column; gap: 16px; }
     .menu-item {
-      background: var(--color-white);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      border: 1px solid var(--color-border);
-      transition: var(--transition);
-      cursor: pointer;
+      background: var(--color-white); border-radius: var(--radius-lg); overflow: hidden;
+      box-shadow: var(--shadow-sm); border: 1px solid var(--color-border);
+      transition: var(--transition); cursor: pointer;
     }
-    .menu-item:active {
-      transform: scale(0.98);
-    }
+    .menu-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .menu-item:active { transform: scale(0.98); }
     .menu-item-img {
-      width: 100%;
-      height: 180px;
-      background: var(--color-warm-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 48px;
-      position: relative;
-      overflow: hidden;
+      width: 100%; height: 180px; background: var(--color-warm-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 56px; position: relative; overflow: hidden;
     }
     .menu-item-img::after {
-      content: '';
-      position: absolute;
-      inset: 0;
+      content: ''; position: absolute; inset: 0;
       background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.03) 100%);
     }
-    .menu-item-info {
-      padding: 20px;
-    }
-    .menu-item-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .menu-item-name {
-      font-size: 17px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
+    .menu-item-info { padding: 20px; }
+    .menu-item-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .menu-item-name { font-size: 17px; font-weight: 700; letter-spacing: 0.5px; }
     .menu-item-tag {
-      flex-shrink: 0;
-      font-size: 11px;
-      padding: 3px 10px;
-      background: rgba(200,85,61,0.08);
-      color: var(--color-accent);
-      border-radius: 100px;
-      font-weight: 500;
+      flex-shrink: 0; font-size: 11px; padding: 3px 10px;
+      background: rgba(200,85,61,0.08); color: var(--color-accent);
+      border-radius: 100px; font-weight: 500;
     }
-    .menu-item-desc {
-      font-size: 13px;
-      color: var(--color-text-light);
-      margin-top: 8px;
-      line-height: 1.6;
-    }
+    .menu-item-desc { font-size: 13px; color: var(--color-text-light); margin-top: 8px; line-height: 1.6; }
     .menu-item-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px solid var(--color-border);
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--color-border);
     }
-    .menu-item-price {
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--color-accent);
-    }
-    .menu-item-price small {
-      font-size: 13px;
-      font-weight: 500;
-    }
+    .menu-item-price { font-size: 20px; font-weight: 800; color: var(--color-accent); }
+    .menu-item-price small { font-size: 13px; font-weight: 500; }
     .menu-item-like {
-      width: 36px;
-      height: 36px;
-      border: 1.5px solid var(--color-border);
-      border-radius: 50%;
-      background: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition);
-      font-size: 16px;
+      width: 36px; height: 36px; border: 1.5px solid var(--color-border);
+      border-radius: 50%; background: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: var(--transition); font-size: 16px;
     }
-    .menu-item-like:hover {
-      border-color: var(--color-accent);
+    .menu-item-like:hover { border-color: var(--color-accent); }
+    .menu-item-like.liked { background: rgba(200,85,61,0.08); border-color: var(--color-accent); }
+    .menu-item-click-hint {
+      font-size: 11px; color: var(--color-text-light); opacity: 0.5; margin-top: 12px; text-align: center;
     }
-    .menu-item-like.liked {
-      background: rgba(200,85,61,0.08);
-      border-color: var(--color-accent);
-    }
+    .menu-item:active .menu-item-click-hint { opacity: 1; }
 
-    /* ========== Social Section ========== */
-    .social-cards {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+    /* ===== Social Section ===== */
+    .social-cards { display: flex; flex-direction: column; gap: 16px; }
     .social-card {
-      background: var(--color-white);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      box-shadow: var(--shadow-sm);
-      border: 1px solid var(--color-border);
-      cursor: pointer;
-      transition: var(--transition);
-      text-decoration: none;
-      color: inherit;
+      background: var(--color-white); border-radius: var(--radius-lg); padding: 24px;
+      display: flex; align-items: center; gap: 18px;
+      box-shadow: var(--shadow-sm); border: 1px solid var(--color-border);
+      cursor: pointer; transition: var(--transition); text-decoration: none; color: inherit;
     }
-    .social-card:active {
-      transform: scale(0.98);
-    }
+    .social-card:active { transform: scale(0.98); }
     .social-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      flex-shrink: 0;
+      width: 52px; height: 52px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; flex-shrink: 0;
     }
-    .social-icon.wechat {
-      background: linear-gradient(135deg, #07C160, #06AD56);
-      color: #fff;
-    }
-    .social-icon.douyin {
-      background: linear-gradient(135deg, #1A1A1A, #333);
-      color: #fff;
-    }
+    .social-icon.wechat { background: linear-gradient(135deg, #07C160, #06AD56); color: #fff; }
+    .social-icon.douyin { background: linear-gradient(135deg, #1A1A1A, #333); color: #fff; }
     .social-info { flex: 1; }
-    .social-name {
-      font-size: 16px;
-      font-weight: 700;
-    }
-    .social-id {
-      font-size: 13px;
-      color: var(--color-text-light);
-      margin-top: 2px;
-    }
+    .social-name { font-size: 16px; font-weight: 700; }
+    .social-id { font-size: 13px; color: var(--color-text-light); margin-top: 2px; }
     .social-action {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--color-bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: var(--transition);
+      width: 40px; height: 40px; border-radius: 50%; background: var(--color-bg);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: var(--transition);
     }
-    .social-card:active .social-action {
-      background: var(--color-warm);
-    }
-    .social-action svg {
-      width: 18px;
-      height: 18px;
-      color: var(--color-text-light);
-    }
+    .social-action svg { width: 18px; height: 18px; color: var(--color-text-light); }
 
-    /* ========== Reservation Section ========== */
+    /* ===== Business Hours ===== */
+    .hours-card {
+      background: var(--color-white); border-radius: var(--radius-lg); padding: 24px;
+      box-shadow: var(--shadow-sm); border: 1px solid var(--color-border);
+      display: flex; align-items: flex-start; gap: 16px;
+    }
+    .hours-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      background: rgba(200,85,61,0.08); display: flex;
+      align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;
+    }
+    .hours-info { flex: 1; }
+    .hours-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .hours-row {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; color: var(--color-text-light);
+    }
+    .hours-row span { color: var(--color-accent); font-weight: 600; }
+
+    /* ===== Reservation Section ===== */
     .reservation {
-      text-align: center;
-      padding: 80px 24px;
+      text-align: center; padding: 80px 24px;
       background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-warm-light) 100%);
     }
-    .reservation h2 {
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      margin-bottom: 12px;
+    .reservation h2 { font-size: 26px; font-weight: 700; letter-spacing: 1px; margin-bottom: 12px; }
+    .reservation p { font-size: 14px; color: var(--color-text-light); margin-bottom: 32px; max-width: 300px; margin-left: auto; margin-right: auto; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 14px 28px; border-radius: 100px; font-size: 15px; font-weight: 600;
+      text-decoration: none; border: none; cursor: pointer; transition: var(--transition); letter-spacing: 0.5px;
     }
-    .reservation p {
-      font-size: 14px;
-      color: var(--color-text-light);
-      margin-bottom: 32px;
-      max-width: 300px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .reservation .btn {
-      width: 100%;
-      max-width: 320px;
-      padding: 16px 32px;
-      font-size: 16px;
-    }
+    .btn-primary { background: var(--color-accent); color: #fff; box-shadow: 0 4px 16px rgba(200,85,61,0.3); }
+    .btn-primary:hover { background: var(--color-accent-dark); transform: translateY(-2px); }
+    .reservation .btn { width: 100%; max-width: 320px; padding: 16px 32px; font-size: 16px; }
 
-    /* Reservation Modal */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 200;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
+    /* ===== Dish Detail Modal ===== */
+    .detail-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: var(--modal-bg); backdrop-filter: blur(8px);
+      display: flex; align-items: flex-end; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
     }
-    .modal-overlay.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .modal {
-      background: var(--color-white);
-      border-radius: 24px 24px 0 0;
-      padding: 32px 24px 40px;
-      width: 100%;
-      max-width: 480px;
-      transform: translateY(100%);
+    .detail-overlay.open { opacity: 1; pointer-events: auto; }
+    .detail-modal {
+      background: var(--color-white); border-radius: 24px 24px 0 0;
+      padding: 0; width: 100%; max-width: 480px; max-height: 85vh;
+      overflow-y: auto; transform: translateY(100%);
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .modal-overlay.open .modal {
-      transform: translateY(0);
+    .detail-overlay.open .detail-modal { transform: translateY(0); }
+    .detail-handle {
+      width: 36px; height: 4px; background: var(--color-border);
+      border-radius: 4px; margin: 12px auto 0;
     }
-    .modal-handle {
-      width: 36px;
-      height: 4px;
-      background: var(--color-border);
-      border-radius: 4px;
-      margin: 0 auto 24px;
+    .detail-img {
+      width: 100%; height: 220px; background: var(--color-warm-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 80px; margin-top: 12px; position: relative; overflow: hidden;
     }
+    .detail-img::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 60px; background: linear-gradient(to top, var(--color-white), transparent);
+    }
+    .detail-body { padding: 24px; }
+    .detail-top-row {
+      display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px;
+    }
+    .detail-name { font-size: 22px; font-weight: 800; }
+    .detail-tag { font-size: 12px; padding: 4px 12px; background: rgba(200,85,61,0.08); color: var(--color-accent); border-radius: 100px; font-weight: 500; }
+    .detail-price { font-size: 24px; font-weight: 800; color: var(--color-accent); margin-bottom: 16px; }
+    .detail-price small { font-size: 15px; font-weight: 500; }
+    .detail-desc { font-size: 14px; color: var(--color-text-light); line-height: 1.8; margin-bottom: 24px; }
+
+    .detail-section { margin-bottom: 20px; }
+    .detail-section-title {
+      font-size: 13px; font-weight: 700; color: var(--color-accent);
+      letter-spacing: 1px; margin-bottom: 10px;
+    }
+
+    /* Spice Level */
+    .spice-level { display: flex; align-items: center; gap: 4px; }
+    .spice-label { font-size: 13px; color: var(--color-text-light); margin-right: 8px; }
+    .spice-pepper { font-size: 18px; }
+    .spice-pepper.muted { opacity: 0.2; }
+
+    /* Pairing */
+    .pairing-card {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--color-bg); border-radius: var(--radius); padding: 14px 16px;
+    }
+    .pairing-emoji { font-size: 32px; }
+    .pairing-info { flex: 1; }
+    .pairing-name { font-size: 14px; font-weight: 600; }
+    .pairing-desc { font-size: 12px; color: var(--color-text-light); margin-top: 2px; }
+
+    .detail-close-btn {
+      width: 100%; padding: 16px; background: var(--color-accent); color: #fff;
+      border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer;
+      margin-top: 8px; transition: var(--transition);
+    }
+    .detail-close-btn:hover { background: var(--color-accent-dark); }
+
+    /* ===== Reservation Modal ===== */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 200; background: var(--modal-bg);
+      backdrop-filter: blur(8px); display: flex; align-items: flex-end;
+      justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; }
+    .modal {
+      background: var(--color-white); border-radius: 24px 24px 0 0;
+      padding: 32px 24px 40px; width: 100%; max-width: 480px;
+      transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-handle { width: 36px; height: 4px; background: var(--color-border); border-radius: 4px; margin: 0 auto 24px; }
     .modal-icon {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: rgba(200,85,61,0.08);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 20px;
-      font-size: 28px;
+      width: 64px; height: 64px; border-radius: 50%; background: rgba(200,85,61,0.08);
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 28px;
     }
-    .modal h3 {
-      font-size: 20px;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 12px;
-    }
-    .modal p {
-      font-size: 15px;
-      color: var(--color-text-light);
-      text-align: center;
-      line-height: 1.8;
-      margin-bottom: 28px;
-    }
-    .modal .btn {
-      width: 100%;
-    }
+    .modal h3 { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 12px; }
+    .modal p { font-size: 15px; color: var(--color-text-light); text-align: center; line-height: 1.8; margin-bottom: 28px; }
+    .modal .btn { width: 100%; }
 
-    /* ========== Footer ========== */
+    /* ===== Footer ===== */
     .footer {
-      background: var(--color-white);
-      border-top: 1px solid var(--color-border);
-      padding: 32px 24px;
-      text-align: center;
+      background: var(--color-white); border-top: 1px solid var(--color-border);
+      padding: 32px 24px; text-align: center;
     }
-    .footer-brand {
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
+    .footer-brand { font-size: 16px; font-weight: 700; letter-spacing: 1px; margin-bottom: 8px; }
     .footer-brand span { color: var(--color-accent); }
-    .footer p {
-      font-size: 12px;
-      color: var(--color-text-light);
-      line-height: 1.8;
-    }
+    .footer p { font-size: 12px; color: var(--color-text-light); line-height: 1.8; }
 
-    /* ========== Toast ========== */
+    /* ===== Toast ===== */
     .toast {
-      position: fixed;
-      bottom: 32px;
-      left: 50%;
+      position: fixed; bottom: 32px; left: 50%;
       transform: translateX(-50%) translateY(80px);
-      background: var(--color-text);
-      color: #fff;
-      padding: 12px 24px;
-      border-radius: 100px;
-      font-size: 14px;
-      font-weight: 500;
-      z-index: 300;
-      opacity: 0;
+      background: var(--color-text); color: var(--color-bg);
+      padding: 12px 24px; border-radius: 100px; font-size: 14px;
+      font-weight: 500; z-index: 400; opacity: 0;
       transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-      white-space: nowrap;
-      box-shadow: var(--shadow-lg);
+      white-space: nowrap; box-shadow: var(--shadow-lg);
     }
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* ========== Animations ========== */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .fade-in.visible {
-      opacity: 1;
-      transform: translateY(0);
+    /* ===== Animations ===== */
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 360px) {
+      .hero-slide-name { font-size: 28px; }
+      .hero-slide-price { font-size: 24px; }
     }
   </style>
 </head>
@@ -716,9 +460,15 @@
   <nav class="navbar" id="navbar">
     <div class="nav-inner">
       <div class="nav-logo">品之<span>味</span></div>
-      <button class="nav-menu-btn" id="menuBtn" aria-label="菜单">
-        <span></span><span></span><span></span>
-      </button>
+      <div class="nav-right">
+        <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+          <span class="icon-sun">☀️</span>
+          <span class="icon-moon">🌙</span>
+        </button>
+        <button class="nav-menu-btn" id="menuBtn" aria-label="菜单">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </nav>
 
@@ -726,28 +476,80 @@
   <div class="mobile-menu" id="mobileMenu">
     <a href="#about" onclick="closeMenu()">门店简介</a>
     <a href="#menu" onclick="closeMenu()">招牌菜单</a>
+    <a href="#hours" onclick="closeMenu()">营业时间</a>
     <a href="#social" onclick="closeMenu()">关注我们</a>
     <a href="#reservation" onclick="closeMenu()">在线预约</a>
   </div>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-badge">地道江西风味</div>
-    <h1>品之味<em>餐厅</em></h1>
-    <p>传承赣菜精髓，用心烹饪每一道菜，让每一口都是家的味道</p>
-    <div class="hero-notice fade-in">
-      <span class="hero-notice-icon">🔔</span>
-      <span>想来尝鲜的食客记得提前在<strong>微信</strong>上预订哦，线下点单排队时间可能较长</span>
+  <!-- Hero Slideshow -->
+  <section class="hero-slideshow" id="heroSlideshow">
+    <!-- Slide 1 -->
+    <div class="hero-slide active" data-index="0">
+      <div class="hero-slide-bg">🍗</div>
+      <div class="hero-slide-content">
+        <div class="hero-slide-tag">🔥 招牌推荐</div>
+        <div class="hero-slide-name">米酒烧鸡</div>
+        <div class="hero-slide-price"><small>¥</small>39</div>
+        <div class="hero-slide-desc">江西传统名菜，米酒慢炖土鸡，酒香渗透每一丝鸡肉</div>
+        <a href="#menu" class="hero-slide-btn">查看菜单 →</a>
+      </div>
     </div>
-    <div class="hero-actions">
-      <a href="#menu" class="btn btn-primary">查看菜单</a>
-      <a href="#reservation" class="btn btn-outline">立即预约</a>
+    <!-- Slide 2 -->
+    <div class="hero-slide" data-index="1">
+      <div class="hero-slide-bg">🐢</div>
+      <div class="hero-slide-content">
+        <div class="hero-slide-tag">⭐ 人气之选</div>
+        <div class="hero-slide-name">特色甲鱼</div>
+        <div class="hero-slide-price"><small>¥</small>48</div>
+        <div class="hero-slide-desc">精选鲜活甲鱼，秘制酱料红烧，胶质丰腴</div>
+        <a href="#menu" class="hero-slide-btn">查看菜单 →</a>
+      </div>
     </div>
+    <!-- Slide 3 -->
+    <div class="hero-slide" data-index="2">
+      <div class="hero-slide-bg">🐸</div>
+      <div class="hero-slide-content">
+        <div class="hero-slide-tag">🏅 经典必吃</div>
+        <div class="hero-slide-name">泡椒牛蛙</div>
+        <div class="hero-slide-price"><small>¥</small>42</div>
+        <div class="hero-slide-desc">现杀牛蛙配自制泡椒，酸辣开胃，嫩滑弹牙</div>
+        <a href="#menu" class="hero-slide-btn">查看菜单 →</a>
+      </div>
+    </div>
+    <!-- Slide 4 -->
+    <div class="hero-slide" data-index="3">
+      <div class="hero-slide-bg">🌶️</div>
+      <div class="hero-slide-content">
+        <div class="hero-slide-tag">💯 桌桌必点</div>
+        <div class="hero-slide-name">碎椒肥肠</div>
+        <div class="hero-slide-price"><small>¥</small>48</div>
+        <div class="hero-slide-desc">卤制肥肠与鲜椒爆炒，焦香脆韧，下饭一绝</div>
+        <a href="#menu" class="hero-slide-btn">查看菜单 →</a>
+      </div>
+    </div>
+
+    <!-- Dots -->
+    <div class="hero-dots" id="heroDots">
+      <button class="hero-dot active" data-index="0"></button>
+      <button class="hero-dot" data-index="1"></button>
+      <button class="hero-dot" data-index="2"></button>
+      <button class="hero-dot" data-index="3"></button>
+    </div>
+
+    <!-- Scroll hint -->
     <div class="scroll-hint">
       <span>向下滑动</span>
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
     </div>
   </section>
+
+  <!-- WeChat Notice -->
+  <div class="hero-notice">
+    <div class="hero-notice-inner fade-in">
+      <span class="hero-notice-icon">🔔</span>
+      <span>想来尝鲜的食客记得提前在<strong>微信</strong>上预订哦，线下点单排队时间可能较长</span>
+    </div>
+  </div>
 
   <!-- About -->
   <div class="divider"></div>
@@ -757,9 +559,7 @@
       <h2 class="section-title">门店简介</h2>
     </div>
     <div class="about-card fade-in">
-      <p>
-        品之味餐厅，专注地道江西菜。我们精选优质食材，传承经典烹饪技法，为您呈现正宗赣味佳肴。从鲜辣可口的米酒烧鸡到香辣下饭的辣椒炒肉，每一道菜都承载着江西大地的风味与记忆。
-      </p>
+      <p>品之味餐厅，专注地道江西菜。我们精选优质食材，传承经典烹饪技法，为您呈现正宗赣味佳肴。从鲜辣可口的米酒烧鸡到香辣下饭的碎椒肥肠，每一道菜都承载着江西大地的风味与记忆。</p>
       <div class="about-features">
         <div class="about-feature">
           <span class="about-feature-icon">🌿</span>
@@ -791,10 +591,11 @@
     <div class="section-header fade-in">
       <div class="section-tag">招牌推荐</div>
       <h2 class="section-title">精选菜单</h2>
-      <p class="section-desc">每一道都是店里的经典之选</p>
+      <p class="section-desc">每一道都是店里的经典之选 · 点击查看详情</p>
     </div>
     <div class="menu-grid">
-      <div class="menu-item fade-in">
+      <!-- Item 1 -->
+      <div class="menu-item fade-in" onclick="openDetail(0)">
         <div class="menu-item-img">🍗</div>
         <div class="menu-item-info">
           <div class="menu-item-top">
@@ -803,13 +604,15 @@
           </div>
           <div class="menu-item-desc">江西传统名菜，米酒慢炖土鸡，酒香渗透每一丝鸡肉，鲜甜醇厚</div>
           <div class="menu-item-bottom">
-            <div class="menu-item-price"><small>¥</small>68</div>
-            <button class="menu-item-like" onclick="toggleLike(this)" aria-label="喜欢">🤍</button>
+            <div class="menu-item-price"><small>¥</small>39</div>
+            <button class="menu-item-like" onclick="event.stopPropagation(); toggleLike(this)" aria-label="喜欢">🤍</button>
           </div>
+          <div class="menu-item-click-hint">点击查看详情 →</div>
         </div>
       </div>
 
-      <div class="menu-item fade-in">
+      <!-- Item 2 -->
+      <div class="menu-item fade-in" onclick="openDetail(1)">
         <div class="menu-item-img">🐢</div>
         <div class="menu-item-info">
           <div class="menu-item-top">
@@ -818,13 +621,15 @@
           </div>
           <div class="menu-item-desc">精选鲜活甲鱼，秘制酱料红烧，胶质丰腴，汤汁浓郁拌饭一绝</div>
           <div class="menu-item-bottom">
-            <div class="menu-item-price"><small>¥</small>88</div>
-            <button class="menu-item-like" onclick="toggleLike(this)" aria-label="喜欢">🤍</button>
+            <div class="menu-item-price"><small>¥</small>48</div>
+            <button class="menu-item-like" onclick="event.stopPropagation(); toggleLike(this)" aria-label="喜欢">🤍</button>
           </div>
+          <div class="menu-item-click-hint">点击查看详情 →</div>
         </div>
       </div>
 
-      <div class="menu-item fade-in">
+      <!-- Item 3 -->
+      <div class="menu-item fade-in" onclick="openDetail(2)">
         <div class="menu-item-img">🐸</div>
         <div class="menu-item-info">
           <div class="menu-item-top">
@@ -833,13 +638,15 @@
           </div>
           <div class="menu-item-desc">现杀牛蛙配自制泡椒，酸辣开胃，蛙肉嫩滑弹牙，越吃越上瘾</div>
           <div class="menu-item-bottom">
-            <div class="menu-item-price"><small>¥</small>58</div>
-            <button class="menu-item-like" onclick="toggleLike(this)" aria-label="喜欢">🤍</button>
+            <div class="menu-item-price"><small>¥</small>42</div>
+            <button class="menu-item-like" onclick="event.stopPropagation(); toggleLike(this)" aria-label="喜欢">🤍</button>
           </div>
+          <div class="menu-item-click-hint">点击查看详情 →</div>
         </div>
       </div>
 
-      <div class="menu-item fade-in">
+      <!-- Item 4 -->
+      <div class="menu-item fade-in" onclick="openDetail(3)">
         <div class="menu-item-img">🌶️</div>
         <div class="menu-item-info">
           <div class="menu-item-top">
@@ -849,9 +656,28 @@
           <div class="menu-item-desc">卤制肥肠切碎与鲜椒爆炒，焦香脆韧，辣而不燥，下酒下饭皆宜</div>
           <div class="menu-item-bottom">
             <div class="menu-item-price"><small>¥</small>48</div>
-            <button class="menu-item-like" onclick="toggleLike(this)" aria-label="喜欢">🤍</button>
+            <button class="menu-item-like" onclick="event.stopPropagation(); toggleLike(this)" aria-label="喜欢">🤍</button>
           </div>
+          <div class="menu-item-click-hint">点击查看详情 →</div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Business Hours -->
+  <div class="divider"></div>
+  <section class="section" id="hours">
+    <div class="section-header fade-in">
+      <div class="section-tag">营业信息</div>
+      <h2 class="section-title">营业时间</h2>
+      <p class="section-desc">别跑空啦，记好时间再来哦</p>
+    </div>
+    <div class="hours-card fade-in">
+      <div class="hours-icon">🕐</div>
+      <div class="hours-info">
+        <div class="hours-title">品之味餐厅</div>
+        <div class="hours-row">午市 <span>11:30 ~ 14:30</span></div>
+        <div class="hours-row">晚市 <span>17:00 ~ 21:30</span></div>
       </div>
     </div>
   </section>
@@ -877,7 +703,6 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
         </div>
       </div>
-
       <div class="social-card fade-in" onclick="copyText('zzhzz1587912948', '抖音号已复制')">
         <div class="social-icon douyin">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86 4.46V13a8.28 8.28 0 005.58 2.16V11.7a4.83 4.83 0 01-3.77-1.78V6.69h3.77z"/></svg>
@@ -903,6 +728,44 @@
     </div>
   </section>
 
+  <!-- Dish Detail Modal -->
+  <div class="detail-overlay" id="detailOverlay" onclick="closeDetail(event)">
+    <div class="detail-modal" onclick="event.stopPropagation()">
+      <div class="detail-handle"></div>
+      <div class="detail-img" id="detailImg">🍗</div>
+      <div class="detail-body">
+        <div class="detail-top-row">
+          <div class="detail-name" id="detailName">米酒烧鸡</div>
+          <div class="detail-tag" id="detailTag">招牌</div>
+        </div>
+        <div class="detail-price" id="detailPrice"><small>¥</small>68</div>
+        <div class="detail-desc" id="detailDesc">江西传统名菜，米酒慢炖土鸡，酒香渗透每一丝鸡肉，鲜甜醇厚</div>
+
+        <!-- Spice Level -->
+        <div class="detail-section">
+          <div class="detail-section-title">🌶️ 辣度指数</div>
+          <div class="spice-level" id="spiceLevel">
+            <span class="spice-label">辣度</span>
+          </div>
+        </div>
+
+        <!-- Recommended Pairing -->
+        <div class="detail-section">
+          <div class="detail-section-title">🍻 推荐搭配</div>
+          <div class="pairing-card" id="pairingCard">
+            <div class="pairing-emoji">🍚</div>
+            <div class="pairing-info">
+              <div class="pairing-name">占位搭配（可后续更换）</div>
+              <div class="pairing-desc">这里可以写具体的搭配推荐内容</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="detail-close-btn" onclick="closeDetailDirect()">返回菜单</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Reservation Modal -->
   <div class="modal-overlay" id="reservationModal" onclick="closeReservation(event)">
     <div class="modal" onclick="event.stopPropagation()">
@@ -925,7 +788,20 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    // ===== Navbar scroll effect =====
+    // ===== Theme Toggle =====
+    const html = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+
+    // ===== Navbar scroll =====
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
       navbar.classList.toggle('scrolled', window.scrollY > 20);
@@ -935,20 +811,76 @@
     const menuBtn = document.getElementById('menuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
     let menuOpen = false;
-
     menuBtn.addEventListener('click', () => {
       menuOpen = !menuOpen;
       menuBtn.classList.toggle('active', menuOpen);
       mobileMenu.classList.toggle('open', menuOpen);
       document.body.style.overflow = menuOpen ? 'hidden' : '';
     });
-
     function closeMenu() {
       menuOpen = false;
       menuBtn.classList.remove('active');
       mobileMenu.classList.remove('open');
       document.body.style.overflow = '';
     }
+
+    // ===== Hero Slideshow =====
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.hero-dot');
+    let currentSlide = 0;
+    let slideInterval;
+
+    function goToSlide(index) {
+      slides[currentSlide].classList.remove('active');
+      dots[currentSlide].classList.remove('active');
+      currentSlide = index;
+      slides[currentSlide].classList.add('active');
+      dots[currentSlide].classList.add('active');
+    }
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        const idx = parseInt(dot.dataset.index);
+        goToSlide(idx);
+        resetAutoSlide();
+      });
+    });
+
+    function resetAutoSlide() {
+      clearInterval(slideInterval);
+      slideInterval = setInterval(() => {
+        goToSlide((currentSlide + 1) % slides.length);
+      }, 3500);
+    }
+    slideInterval = setInterval(() => {
+      goToSlide((currentSlide + 1) % slides.length);
+    }, 3500);
+
+    // Pause slideshow when not visible
+    const heroObserver = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        if (!slideInterval) resetAutoSlide();
+      } else {
+        clearInterval(slideInterval);
+        slideInterval = null;
+      }
+    }, { threshold: 0.3 });
+    heroObserver.observe(document.getElementById('heroSlideshow'));
+
+    // Touch swipe support for hero
+    let touchStartX = 0, touchEndX = 0;
+    document.getElementById('heroSlideshow').addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    document.getElementById('heroSlideshow').addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) goToSlide((currentSlide + 1) % slides.length);
+        else goToSlide((currentSlide - 1 + slides.length) % slides.length);
+        resetAutoSlide();
+      }
+    });
 
     // ===== Like button =====
     function toggleLike(btn) {
@@ -962,30 +894,81 @@
     // ===== Copy text =====
     function copyText(text, message) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-          showToast(message);
-        }).catch(() => {
-          fallbackCopy(text, message);
-        });
+        navigator.clipboard.writeText(text).then(() => showToast(message))
+          .catch(() => fallbackCopy(text, message));
       } else {
         fallbackCopy(text, message);
       }
     }
-
     function fallbackCopy(text, message) {
-      const textarea = document.createElement('textarea');
-      textarea.value = text;
-      textarea.style.position = 'fixed';
-      textarea.style.opacity = '0';
-      document.body.appendChild(textarea);
-      textarea.select();
-      try {
-        document.execCommand('copy');
-        showToast(message);
-      } catch (e) {
-        showToast('复制失败，请手动复制');
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); showToast(message); }
+      catch (e) { showToast('复制失败，请手动复制'); }
+      document.body.removeChild(ta);
+    }
+
+    // ===== Dish Detail Modal =====
+    const dishes = [
+      {
+        name: '米酒烧鸡', tag: '招牌', price: '39', emoji: '🍗',
+        desc: '江西传统名菜，米酒慢炖土鸡，酒香渗透每一丝鸡肉，鲜甜醇厚',
+        spice: 2, pairingEmoji: '🍚', pairingName: '瓦罐煨汤', pairingDesc: '一荤一汤，米酒的甜润配上煨汤的醇鲜，绝配'
+      },
+      {
+        name: '特色甲鱼', tag: '人气', price: '48', emoji: '🐢',
+        desc: '精选鲜活甲鱼，秘制酱料红烧，胶质丰腴，汤汁浓郁拌饭一绝',
+        spice: 5, pairingEmoji: '🥬', pairingName: '蒜蓉时蔬', pairingDesc: '浓郁酱汁配清爽时蔬，解腻又平衡'
+      },
+      {
+        name: '泡椒牛蛙', tag: '经典', price: '42', emoji: '🐸',
+        desc: '现杀牛蛙配自制泡椒，酸辣开胃，蛙肉嫩滑弹牙，越吃越上瘾',
+        spice: 4, pairingEmoji: '🍺', pairingName: '冰镇啤酒', pairingDesc: '酸辣牛蛙配一口冰啤，爽到飞起'
+      },
+      {
+        name: '碎椒肥肠', tag: '必点', price: '48', emoji: '🌶️',
+        desc: '卤制肥肠切碎与鲜椒爆炒，焦香脆韧，辣而不燥，下酒下饭皆宜',
+        spice: 3, pairingEmoji: '🍚', pairingName: '白米饭', pairingDesc: '肥肠的焦香脆韧，配上一碗热腾腾的白米饭，停不下来'
       }
-      document.body.removeChild(textarea);
+    ];
+
+    function openDetail(index) {
+      const d = dishes[index];
+      document.getElementById('detailImg').textContent = d.emoji;
+      document.getElementById('detailName').textContent = d.name;
+      document.getElementById('detailTag').textContent = d.tag;
+      document.getElementById('detailPrice').innerHTML = '<small>¥</small>' + d.price;
+      document.getElementById('detailDesc').textContent = d.desc;
+
+      // Spice level
+      const spiceDiv = document.getElementById('spiceLevel');
+      spiceDiv.innerHTML = '<span class="spice-label">辣度</span>';
+      for (let i = 0; i < 5; i++) {
+        const pepper = document.createElement('span');
+        pepper.className = 'spice-pepper' + (i >= d.spice ? ' muted' : '');
+        pepper.textContent = '🌶️';
+        spiceDiv.appendChild(pepper);
+      }
+
+      // Pairing
+      document.getElementById('pairingCard').innerHTML =
+        '<div class="pairing-emoji">' + d.pairingEmoji + '</div>' +
+        '<div class="pairing-info">' +
+          '<div class="pairing-name">' + d.pairingName + '</div>' +
+          '<div class="pairing-desc">' + d.pairingDesc + '</div>' +
+        '</div>';
+
+      document.getElementById('detailOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDetail(e) {
+      if (e.target === e.currentTarget) closeDetailDirect();
+    }
+    function closeDetailDirect() {
+      document.getElementById('detailOverlay').classList.remove('open');
+      document.body.style.overflow = '';
     }
 
     // ===== Reservation modal =====
@@ -993,13 +976,9 @@
       document.getElementById('reservationModal').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
-
     function closeReservation(e) {
-      if (e.target === e.currentTarget) {
-        closeReservationDirect();
-      }
+      if (e.target === e.currentTarget) closeReservationDirect();
     }
-
     function closeReservationDirect() {
       document.getElementById('reservationModal').classList.remove('open');
       document.body.style.overflow = '';
@@ -1012,20 +991,13 @@
       clearTimeout(toastTimer);
       toast.textContent = message;
       toast.classList.add('show');
-      toastTimer = setTimeout(() => {
-        toast.classList.remove('show');
-      }, 2000);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
     }
 
-    // ===== Scroll fade-in animation =====
+    // ===== Scroll fade-in =====
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
   </script>
 </body>
