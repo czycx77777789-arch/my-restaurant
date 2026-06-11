@@ -2,7 +2,7 @@
 <html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>品之味餐厅 — 地道江西菜</title>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -30,12 +30,12 @@
       --color-bg: #1A1A1A;
       --color-white: #252525;
       --color-text: #E8E8E8;
-      --color-text-light: #999;
+      --color-text-light: #A0A0A0;
       --color-accent: #FF7B5A;
       --color-accent-dark: #E0694A;
       --color-warm: #2C2520;
       --color-warm-light: #1F1F1F;
-      --color-border: #333;
+      --color-border: #383838;
       --shadow-sm: 0 2px 8px rgba(0,0,0,0.2);
       --shadow-md: 0 4px 20px rgba(0,0,0,0.25);
       --shadow-lg: 0 8px 40px rgba(0,0,0,0.3);
@@ -83,6 +83,7 @@
       justify-content: center; font-size: 16px; transition: var(--transition);
     }
     .theme-toggle:hover { background: var(--color-warm); }
+    .theme-toggle:active { transform: scale(0.92); }
     .theme-toggle .icon-sun { display: none; }
     .theme-toggle .icon-moon { display: inline; }
     [data-theme="dark"] .theme-toggle .icon-sun { display: inline; }
@@ -94,6 +95,7 @@
       align-items: center; justify-content: center; gap: 5px; transition: var(--transition);
     }
     .nav-menu-btn:hover { background: var(--color-warm); }
+    .nav-menu-btn:active { transform: scale(0.92); }
     .nav-menu-btn span { display: block; width: 18px; height: 2px; background: var(--color-text); border-radius: 2px; transition: var(--transition); }
     .nav-menu-btn.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
     .nav-menu-btn.active span:nth-child(2) { opacity: 0; }
@@ -101,16 +103,16 @@
 
     .mobile-menu {
       position: fixed; inset: 0; z-index: 99;
-      background: rgba(250, 248, 245, 0.98); backdrop-filter: blur(20px);
+      background: rgba(250, 248, 245, 0.98); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       display: flex; flex-direction: column; align-items: center;
-      justify-content: center; gap: 28px;
-      opacity: 0; pointer-events: none; transition: opacity 0.35s ease;
+      justify-content: center; gap: 28px; opacity: 0;
+      pointer-events: none; transition: opacity 0.35s ease;
     }
     [data-theme="dark"] .mobile-menu { background: rgba(26, 26, 26, 0.98); }
     .mobile-menu.open { opacity: 1; pointer-events: auto; }
     .mobile-menu a {
-      font-size: 20px; font-weight: 500; color: var(--color-text);
-      text-decoration: none; opacity: 0; transform: translateY(16px); transition: var(--transition);
+      font-size: 20px; font-weight: 500; color: var(--color-text); text-decoration: none;
+      opacity: 0; transform: translateY(16px); transition: var(--transition);
     }
     .mobile-menu.open a { opacity: 1; transform: translateY(0); }
     .mobile-menu.open a:nth-child(1) { transition-delay: 0.05s; }
@@ -126,40 +128,38 @@
     .hero-slide {
       position: absolute; inset: 0; display: flex; flex-direction: column;
       align-items: center; justify-content: center; text-align: center;
-      padding: 100px 24px 80px;
-      opacity: 0; transition: opacity 0.8s ease, transform 0.8s ease;
+      padding: 100px 24px 80px; opacity: 0;
+      transition: opacity 0.8s ease, transform 0.8s ease;
       transform: scale(1.05);
     }
     .hero-slide.active { opacity: 1; transform: scale(1); }
     .hero-slide-bg {
       position: absolute; inset: 0; display: flex; align-items: center;
       justify-content: center; font-size: 200px; opacity: 0.08;
-      transition: opacity 0.8s ease;
+      transition: opacity 0.8s ease; user-select: none;
     }
-    [data-theme="dark"] .hero-slide-bg { opacity: 0.06; }
-    .hero-slide-content { position: relative; z-index: 1; }
+    [data-theme="dark"] .hero-slide-bg { opacity: 0.05; }
+    .hero-slide-content { position: relative; z-index: 1; text-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    [data-theme="dark"] .hero-slide-content { text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    
     .hero-slide-tag {
       display: inline-block; padding: 4px 14px; background: rgba(200,85,61,0.12);
       color: var(--color-accent); border-radius: 100px;
       font-size: 12px; font-weight: 600; letter-spacing: 2px; margin-bottom: 16px;
     }
-    .hero-slide-name {
-      font-size: 34px; font-weight: 800; letter-spacing: 2px; margin-bottom: 8px;
-    }
-    .hero-slide-price {
-      font-size: 28px; font-weight: 800; color: var(--color-accent); margin-bottom: 12px;
-    }
+    .hero-slide-name { font-size: 34px; font-weight: 800; letter-spacing: 2px; margin-bottom: 8px; }
+    .hero-slide-price { font-size: 28px; font-weight: 800; color: var(--color-accent); margin-bottom: 12px; }
     .hero-slide-price small { font-size: 16px; font-weight: 500; }
-    .hero-slide-desc {
-      font-size: 14px; color: var(--color-text-light); max-width: 280px; margin-bottom: 32px;
-    }
+    .hero-slide-desc { font-size: 15px; color: var(--color-text-light); max-width: 280px; margin-bottom: 32px; margin-left: auto; margin-right: auto; }
+    
     .hero-slide-btn {
       display: inline-flex; align-items: center; gap: 6px; padding: 14px 32px;
       background: var(--color-accent); color: #fff; border-radius: 100px;
       font-size: 15px; font-weight: 600; text-decoration: none;
       box-shadow: 0 4px 16px rgba(200,85,61,0.3); transition: var(--transition);
     }
-    .hero-slide-btn:hover { transform: translateY(-2px); }
+    .hero-slide-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(200,85,61,0.4); }
+    .hero-slide-btn:active { transform: translateY(0) scale(0.96); }
 
     /* Hero Dots */
     .hero-dots {
@@ -177,9 +177,9 @@
       position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
       display: flex; flex-direction: column; align-items: center; gap: 6px;
       color: var(--color-text-light); font-size: 11px; z-index: 2;
-      animation: float 2.5s ease-in-out infinite;
+      animation: float 2.5s ease-in-out infinite; user-select: none;
     }
-    .scroll-hint svg { opacity: 0.4; }
+    .scroll-hint svg { opacity: 0.5; }
     @keyframes float {
       0%, 100% { transform: translateX(-50%) translateY(0); }
       50% { transform: translateX(-50%) translateY(8px); }
@@ -195,13 +195,10 @@
     }
     .section-title { font-size: 26px; font-weight: 700; letter-spacing: 1px; }
     .section-desc { font-size: 14px; color: var(--color-text-light); margin-top: 10px; }
-
     .divider { max-width: 480px; margin: 0 auto; height: 1px; background: var(--color-border); }
 
     /* ===== Notice ===== */
-    .hero-notice {
-      max-width: 480px; margin: 0 auto; padding: 0 24px 32px;
-    }
+    .hero-notice { max-width: 480px; margin: 0 auto; padding: 0 24px 32px; }
     .hero-notice-inner {
       display: inline-flex; align-items: flex-start; gap: 8px;
       padding: 12px 18px; background: rgba(200,85,61,0.06);
@@ -260,7 +257,7 @@
       margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--color-border);
     }
     .menu-item-price { font-size: 20px; font-weight: 800; color: var(--color-accent); }
-    .menu-item-price small { font-size: 13px; font-weight: 500; }
+    .menu-item-price small { font-size: 13px; font-weight: 500; margin-right: 2px;}
     .menu-item-like {
       width: 36px; height: 36px; border: 1.5px solid var(--color-border);
       border-radius: 50%; background: none; cursor: pointer;
@@ -278,11 +275,10 @@
     .social-cards { display: flex; flex-direction: column; gap: 16px; }
     .social-card {
       background: var(--color-white); border-radius: var(--radius-lg); padding: 24px;
-      display: flex; align-items: center; gap: 18px;
-      box-shadow: var(--shadow-sm); border: 1px solid var(--color-border);
+      display: flex; align-items: center; gap: 18px; box-shadow: var(--shadow-sm); border: 1px solid var(--color-border);
       cursor: pointer; transition: var(--transition); text-decoration: none; color: inherit;
     }
-    .social-card:active { transform: scale(0.98); }
+    .social-card:active { transform: scale(0.98); background: var(--color-warm-light); }
     .social-icon {
       width: 52px; height: 52px; border-radius: 16px;
       display: flex; align-items: center; justify-content: center;
@@ -306,16 +302,12 @@
       display: flex; align-items: flex-start; gap: 16px;
     }
     .hours-icon {
-      width: 48px; height: 48px; border-radius: 14px;
-      background: rgba(200,85,61,0.08); display: flex;
-      align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;
+      width: 48px; height: 48px; border-radius: 14px; background: rgba(200,85,61,0.08);
+      display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;
     }
     .hours-info { flex: 1; }
     .hours-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-    .hours-row {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 14px; color: var(--color-text-light);
-    }
+    .hours-row { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--color-text-light); }
     .hours-row span { color: var(--color-accent); font-weight: 600; }
 
     /* ===== Reservation Section ===== */
@@ -328,31 +320,31 @@
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       padding: 14px 28px; border-radius: 100px; font-size: 15px; font-weight: 600;
-      text-decoration: none; border: none; cursor: pointer; transition: var(--transition); letter-spacing: 0.5px;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: var(--transition); letter-spacing: 0.5px;
     }
     .btn-primary { background: var(--color-accent); color: #fff; box-shadow: 0 4px 16px rgba(200,85,61,0.3); }
     .btn-primary:hover { background: var(--color-accent-dark); transform: translateY(-2px); }
+    .btn-primary:active { transform: translateY(0) scale(0.96); box-shadow: 0 2px 8px rgba(200,85,61,0.2); }
     .reservation .btn { width: 100%; max-width: 320px; padding: 16px 32px; font-size: 16px; }
 
     /* ===== Dish Detail Modal ===== */
     .detail-overlay {
       position: fixed; inset: 0; z-index: 300;
-      background: var(--modal-bg); backdrop-filter: blur(8px);
+      background: var(--modal-bg); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
       display: flex; align-items: flex-end; justify-content: center;
       opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
     }
     .detail-overlay.open { opacity: 1; pointer-events: auto; }
     .detail-modal {
-      background: var(--color-white); border-radius: 24px 24px 0 0;
-      padding: 0; width: 100%; max-width: 480px; max-height: 85vh;
-      overflow-y: auto; transform: translateY(100%);
+      background: var(--color-white); border-radius: 24px 24px 0 0; padding: 0;
+      width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto;
+      transform: translateY(100%) scale(0.95);
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      padding-bottom: env(safe-area-inset-bottom);
     }
-    .detail-overlay.open .detail-modal { transform: translateY(0); }
-    .detail-handle {
-      width: 36px; height: 4px; background: var(--color-border);
-      border-radius: 4px; margin: 12px auto 0;
-    }
+    .detail-overlay.open .detail-modal { transform: translateY(0) scale(1); }
+    .detail-handle { width: 36px; height: 4px; background: var(--color-border); border-radius: 4px; margin: 12px auto 0; }
     .detail-img {
       width: 100%; height: 220px; background: var(--color-warm-light);
       display: flex; align-items: center; justify-content: center;
@@ -363,9 +355,7 @@
       height: 60px; background: linear-gradient(to top, var(--color-white), transparent);
     }
     .detail-body { padding: 24px; }
-    .detail-top-row {
-      display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px;
-    }
+    .detail-top-row { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
     .detail-name { font-size: 22px; font-weight: 800; }
     .detail-tag { font-size: 12px; padding: 4px 12px; background: rgba(200,85,61,0.08); color: var(--color-accent); border-radius: 100px; font-weight: 500; }
     .detail-price { font-size: 24px; font-weight: 800; color: var(--color-accent); margin-bottom: 16px; }
@@ -382,7 +372,7 @@
     .spice-level { display: flex; align-items: center; gap: 4px; }
     .spice-label { font-size: 13px; color: var(--color-text-light); margin-right: 8px; }
     .spice-pepper { font-size: 18px; }
-    .spice-pepper.muted { opacity: 0.2; }
+    .spice-pepper.muted { opacity: 0.2; filter: grayscale(100%); }
 
     /* Pairing */
     .pairing-card {
@@ -397,23 +387,25 @@
     .detail-close-btn {
       width: 100%; padding: 16px; background: var(--color-accent); color: #fff;
       border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer;
-      margin-top: 8px; transition: var(--transition);
+      margin-top: 12px; transition: var(--transition);
     }
     .detail-close-btn:hover { background: var(--color-accent-dark); }
+    .detail-close-btn:active { transform: scale(0.96); }
 
     /* ===== Reservation Modal ===== */
     .modal-overlay {
       position: fixed; inset: 0; z-index: 200; background: var(--modal-bg);
-      backdrop-filter: blur(8px); display: flex; align-items: flex-end;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; align-items: flex-end;
       justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
     }
     .modal-overlay.open { opacity: 1; pointer-events: auto; }
     .modal {
       background: var(--color-white); border-radius: 24px 24px 0 0;
-      padding: 32px 24px 40px; width: 100%; max-width: 480px;
-      transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 32px 24px calc(40px + env(safe-area-inset-bottom)); 
+      width: 100%; max-width: 480px;
+      transform: translateY(100%) scale(0.95); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-overlay.open .modal { transform: translateY(0) scale(1); }
     .modal-handle { width: 36px; height: 4px; background: var(--color-border); border-radius: 4px; margin: 0 auto 24px; }
     .modal-icon {
       width: 64px; height: 64px; border-radius: 50%; background: rgba(200,85,61,0.08);
@@ -426,7 +418,7 @@
     /* ===== Footer ===== */
     .footer {
       background: var(--color-white); border-top: 1px solid var(--color-border);
-      padding: 32px 24px; text-align: center;
+      padding: 32px 24px calc(32px + env(safe-area-inset-bottom)); text-align: center;
     }
     .footer-brand { font-size: 16px; font-weight: 700; letter-spacing: 1px; margin-bottom: 8px; }
     .footer-brand span { color: var(--color-accent); }
@@ -434,11 +426,11 @@
 
     /* ===== Toast ===== */
     .toast {
-      position: fixed; bottom: 32px; left: 50%;
+      position: fixed; bottom: calc(32px + env(safe-area-inset-bottom)); left: 50%;
       transform: translateX(-50%) translateY(80px);
       background: var(--color-text); color: var(--color-bg);
       padding: 12px 24px; border-radius: 100px; font-size: 14px;
-      font-weight: 500; z-index: 400; opacity: 0;
+      font-weight: 500; z-index: 400; opacity: 0; pointer-events: none;
       transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
       white-space: nowrap; box-shadow: var(--shadow-lg);
     }
@@ -456,7 +448,6 @@
 </head>
 <body>
 
-  <!-- Navbar -->
   <nav class="navbar" id="navbar">
     <div class="nav-inner">
       <div class="nav-logo">品之<span>味</span></div>
@@ -472,7 +463,6 @@
     </div>
   </nav>
 
-  <!-- Mobile Menu -->
   <div class="mobile-menu" id="mobileMenu">
     <a href="#about" onclick="closeMenu()">门店简介</a>
     <a href="#menu" onclick="closeMenu()">招牌菜单</a>
@@ -481,9 +471,7 @@
     <a href="#reservation" onclick="closeMenu()">在线预约</a>
   </div>
 
-  <!-- Hero Slideshow -->
   <section class="hero-slideshow" id="heroSlideshow">
-    <!-- Slide 1 -->
     <div class="hero-slide active" data-index="0">
       <div class="hero-slide-bg">🍗</div>
       <div class="hero-slide-content">
@@ -494,7 +482,6 @@
         <a href="#menu" class="hero-slide-btn">查看菜单 →</a>
       </div>
     </div>
-    <!-- Slide 2 -->
     <div class="hero-slide" data-index="1">
       <div class="hero-slide-bg">🐢</div>
       <div class="hero-slide-content">
@@ -505,7 +492,6 @@
         <a href="#menu" class="hero-slide-btn">查看菜单 →</a>
       </div>
     </div>
-    <!-- Slide 3 -->
     <div class="hero-slide" data-index="2">
       <div class="hero-slide-bg">🐸</div>
       <div class="hero-slide-content">
@@ -516,7 +502,6 @@
         <a href="#menu" class="hero-slide-btn">查看菜单 →</a>
       </div>
     </div>
-    <!-- Slide 4 -->
     <div class="hero-slide" data-index="3">
       <div class="hero-slide-bg">🌶️</div>
       <div class="hero-slide-content">
@@ -528,30 +513,26 @@
       </div>
     </div>
 
-    <!-- Dots -->
     <div class="hero-dots" id="heroDots">
-      <button class="hero-dot active" data-index="0"></button>
-      <button class="hero-dot" data-index="1"></button>
-      <button class="hero-dot" data-index="2"></button>
-      <button class="hero-dot" data-index="3"></button>
+      <button class="hero-dot active" data-index="0" aria-label="幻灯片 1"></button>
+      <button class="hero-dot" data-index="1" aria-label="幻灯片 2"></button>
+      <button class="hero-dot" data-index="2" aria-label="幻灯片 3"></button>
+      <button class="hero-dot" data-index="3" aria-label="幻灯片 4"></button>
     </div>
 
-    <!-- Scroll hint -->
     <div class="scroll-hint">
       <span>向下滑动</span>
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
     </div>
   </section>
 
-  <!-- WeChat Notice -->
   <div class="hero-notice">
     <div class="hero-notice-inner fade-in">
       <span class="hero-notice-icon">🔔</span>
-      <span>想来尝鲜的食客记得提前在<strong>微信</strong>上预订哦，线下点单排队时间可能较长</span>
+      <span>想来尝鲜的食客记得提前在<strong>微信</strong>上预订哦，线下排队可能较长</span>
     </div>
   </div>
 
-  <!-- About -->
   <div class="divider"></div>
   <section class="section" id="about">
     <div class="section-header fade-in">
@@ -585,7 +566,6 @@
     </div>
   </section>
 
-  <!-- Menu -->
   <div class="divider"></div>
   <section class="section" id="menu">
     <div class="section-header fade-in">
@@ -594,7 +574,6 @@
       <p class="section-desc">每一道都是店里的经典之选 · 点击查看详情</p>
     </div>
     <div class="menu-grid">
-      <!-- Item 1 -->
       <div class="menu-item fade-in" onclick="openDetail(0)">
         <div class="menu-item-img">🍗</div>
         <div class="menu-item-info">
@@ -611,7 +590,6 @@
         </div>
       </div>
 
-      <!-- Item 2 -->
       <div class="menu-item fade-in" onclick="openDetail(1)">
         <div class="menu-item-img">🐢</div>
         <div class="menu-item-info">
@@ -628,7 +606,6 @@
         </div>
       </div>
 
-      <!-- Item 3 -->
       <div class="menu-item fade-in" onclick="openDetail(2)">
         <div class="menu-item-img">🐸</div>
         <div class="menu-item-info">
@@ -645,7 +622,6 @@
         </div>
       </div>
 
-      <!-- Item 4 -->
       <div class="menu-item fade-in" onclick="openDetail(3)">
         <div class="menu-item-img">🌶️</div>
         <div class="menu-item-info">
@@ -664,7 +640,6 @@
     </div>
   </section>
 
-  <!-- Business Hours -->
   <div class="divider"></div>
   <section class="section" id="hours">
     <div class="section-header fade-in">
@@ -682,7 +657,6 @@
     </div>
   </section>
 
-  <!-- Social -->
   <div class="divider"></div>
   <section class="section" id="social">
     <div class="section-header fade-in">
@@ -718,7 +692,6 @@
     </div>
   </section>
 
-  <!-- Reservation -->
   <section class="reservation" id="reservation">
     <div class="fade-in">
       <div class="section-tag">预约用餐</div>
@@ -728,7 +701,6 @@
     </div>
   </section>
 
-  <!-- Dish Detail Modal -->
   <div class="detail-overlay" id="detailOverlay" onclick="closeDetail(event)">
     <div class="detail-modal" onclick="event.stopPropagation()">
       <div class="detail-handle"></div>
@@ -741,7 +713,6 @@
         <div class="detail-price" id="detailPrice"><small>¥</small>68</div>
         <div class="detail-desc" id="detailDesc">江西传统名菜，米酒慢炖土鸡，酒香渗透每一丝鸡肉，鲜甜醇厚</div>
 
-        <!-- Spice Level -->
         <div class="detail-section">
           <div class="detail-section-title">🌶️ 辣度指数</div>
           <div class="spice-level" id="spiceLevel">
@@ -749,14 +720,13 @@
           </div>
         </div>
 
-        <!-- Recommended Pairing -->
         <div class="detail-section">
           <div class="detail-section-title">🍻 推荐搭配</div>
           <div class="pairing-card" id="pairingCard">
             <div class="pairing-emoji">🍚</div>
             <div class="pairing-info">
-              <div class="pairing-name">占位搭配（可后续更换）</div>
-              <div class="pairing-desc">这里可以写具体的搭配推荐内容</div>
+              <div class="pairing-name">特色主食</div>
+              <div class="pairing-desc">精选搭配，口感更佳</div>
             </div>
           </div>
         </div>
@@ -766,7 +736,6 @@
     </div>
   </div>
 
-  <!-- Reservation Modal -->
   <div class="modal-overlay" id="reservationModal" onclick="closeReservation(event)">
     <div class="modal" onclick="event.stopPropagation()">
       <div class="modal-handle"></div>
@@ -777,14 +746,12 @@
     </div>
   </div>
 
-  <!-- Footer -->
   <footer class="footer">
     <div class="footer-brand">品之<span>味</span>餐厅</div>
     <p>传承赣菜精髓 · 用心烹饪每一道菜</p>
-    <p style="margin-top: 8px; opacity: 0.6;">© 2025 品之味餐厅 版权所有</p>
+    <p style="margin-top: 8px; opacity: 0.6;">© 2026 品之味餐厅 版权所有</p>
   </footer>
 
-  <!-- Toast -->
   <div class="toast" id="toast"></div>
 
   <script>
@@ -845,7 +812,6 @@
         resetAutoSlide();
       });
     });
-
     function resetAutoSlide() {
       clearInterval(slideInterval);
       slideInterval = setInterval(() => {
@@ -855,7 +821,7 @@
     slideInterval = setInterval(() => {
       goToSlide((currentSlide + 1) % slides.length);
     }, 3500);
-
+    
     // Pause slideshow when not visible
     const heroObserver = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
@@ -881,7 +847,7 @@
         resetAutoSlide();
       }
     });
-
+    
     // ===== Like button =====
     function toggleLike(btn) {
       const isLiked = btn.classList.toggle('liked');
@@ -932,7 +898,7 @@
         spice: 3, pairingEmoji: '🍚', pairingName: '白米饭', pairingDesc: '肥肠的焦香脆韧，配上一碗热腾腾的白米饭，停不下来'
       }
     ];
-
+    
     function openDetail(index) {
       const d = dishes[index];
       document.getElementById('detailImg').textContent = d.emoji;
@@ -940,7 +906,7 @@
       document.getElementById('detailTag').textContent = d.tag;
       document.getElementById('detailPrice').innerHTML = '<small>¥</small>' + d.price;
       document.getElementById('detailDesc').textContent = d.desc;
-
+      
       // Spice level
       const spiceDiv = document.getElementById('spiceLevel');
       spiceDiv.innerHTML = '<span class="spice-label">辣度</span>';
@@ -958,7 +924,7 @@
           '<div class="pairing-name">' + d.pairingName + '</div>' +
           '<div class="pairing-desc">' + d.pairingDesc + '</div>' +
         '</div>';
-
+        
       document.getElementById('detailOverlay').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
